@@ -1,6 +1,6 @@
 #ifndef _STRFUNCS_H
 #define _STRFUNCS_H
-#include <stdbool.h>
+
 
 size_t string_length(const char *str);
 /*Calcula la longitud de la cadena apuntada por str*/

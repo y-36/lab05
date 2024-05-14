@@ -12,8 +12,8 @@ size_t string_length(const char *str){
    if(str == NULL){
 	printf("NULL\n");
          s=0;
-	return 0;
-    } 
+	return s;
+    }
     size_t i = 1;
     while (*str != '\0') {
         i++;
