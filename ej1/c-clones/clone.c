@@ -5,13 +5,22 @@
 
 #define MAX_LENGTH 1820
 
-char *string_clone(const char *str, size_t length) {
+/*char *string_clone(const char *str, size_t length) {
     char clon[MAX_LENGTH];
     char *output=clon;
     for (size_t i=0; i<length;i++) {
         output[i] = str[i];
     }
     output[length] = '\0';
+    return output;
+}*/
+//----- Redefinicion de *string_clone() -----
+char *string_clone(const char *str, size_t length) {
+    char *output = (char *)malloc(length + 1); // +1 for the null terminator
+    if (output) {
+        memcpy(output, str, length);
+        output[length] = '\0'; // Null-terminate the copy
+    }
     return output;
 }
 
@@ -53,10 +62,9 @@ int main(void) {
          "                on the critical issue of creating\n"
          "                an    ARMY    OF   THE   REPUBLIC\n"
          "                to    assist    the   overwhelmed\n"
-         "                Jedi....\n" ANSI_WHITE;
-    char *copy=NULL;
-
-    copy = string_clone(original, sizeof(original)/sizeof(*original));
+         "                Jedi....\n'\0'" ANSI_WHITE;
+    //solucion del promebla de read & write 
+    char *copy=  string_clone(original, strlen(original));
     printf("Original:\n" ANSI_CYAN
             " %s\n", original);
     copy[0] = 'A';
@@ -67,6 +75,8 @@ int main(void) {
     copy[5] = 'g';
     printf("Copia   :\n" ANSI_CYAN
            " %s\n", copy);
+    free(copy);
+    //alloced alert
 
     return EXIT_SUCCESS;
 }
