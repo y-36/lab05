@@ -22,7 +22,7 @@ size_t string_length(const char *str){
     return i;
 }
 
-char *string_filter(const char *str, char c){
+ char *string_filter(const char *str, char c){
 /*Devueleve una nueva cadena en memoria dinamina
   se optine tomando los char de str !=c */
     if (str == NULL) {
@@ -46,6 +46,10 @@ char *string_filter(const char *str, char c){
         }
         // Agrega el carácter nulo al final
         filtered_str[j] = '\0';
+        free(filtered_str);
+	//-----------------//
+	/*VALGRIND DETEDED*/
+        //----------------//
     }
     return filtered_str;
 }

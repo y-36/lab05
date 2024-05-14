@@ -25,6 +25,7 @@ int main(void) {
     filtered = string_filter(user_input, ignore_chars[0]);
     for (unsigned int i=0; i < SIZEOF_ARRAY(ignore_chars); i++) {
         filtered = string_filter(filtered, ignore_chars[i]);
+	/* Valgrind alert */
     }
 
     printf("El texto:\n\n"
