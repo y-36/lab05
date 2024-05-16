@@ -7,6 +7,7 @@
 typedef struct _s_stack {
     stack_elem e;
     struct _s_stack *next;
+     int size; // Agregamos el campo size aquí
 } stack_t;
 
 /**
@@ -31,6 +32,7 @@ stack stack_push(stack s, stack_elem e){
       }
       p->e=e;
       p-> next=s;
+      p->size = s->size + 1; //actualizamos el valor de size z
       return p;
 }
 
@@ -54,13 +56,8 @@ stack stack_pop(stack s){
 * @param s A stack
 * @return The size of the stack
 */
-unsigned int stack_size(stack s){
-	int l = 0;
-	while(stack_is_empty(s)){
-		s = s->next;
-		l++;
-	}
-        return l;
+unsigned int stack_size(const stack s) {
+    return s ? s->size : 0;
 }
 
 /**
@@ -109,9 +106,8 @@ stack_elem *stack_to_array(stack s){
 */
 
 void stack_destroy(stack s){
-
       assert(stack_is_empty(s));
       free(s);
-      
 }
+
 
