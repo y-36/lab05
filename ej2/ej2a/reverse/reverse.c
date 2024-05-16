@@ -55,13 +55,23 @@ int main(int argc, char *argv[]) {
   printf("Original: ");
   array_dump(array, length);
 
-  int *new_array=NULL;
-  /**
-  *
-  *  --- COMPLETAR ----
-  *
-  */
+  int *new_array = (int *)malloc(length * sizeof(int));
+  if (new_array == NULL) {
+      fprintf(stderr, "Error: No se pudo asignar memoria para new_array.\n");
+      // Manejo del error (puedes salir del programa o tomar otra acción)
+  }
+
+  // Copia los elementos en orden inverso
+  for (unsigned int i = 0; i < length; ++i) {
+    new_array[i] = array[length - 1 - i];
+  }
+
+  // Imprime el nuevo arreglo
   printf("Reversed: ");
   array_dump(new_array, length);
+
+  // Libera la memoria al finalizar
+  free(new_array);
+
   return (EXIT_SUCCESS);
 }
