@@ -75,7 +75,6 @@ stack_elem *stack_to_array(stack s);
 * @param s A stack
 * @note All memory resources are freed
 */
-stack stack_destroy(stack s);
-
+void stack_destroy(stack s);
 
 #endif

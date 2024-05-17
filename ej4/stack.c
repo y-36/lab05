@@ -7,7 +7,6 @@
 typedef struct _s_stack {
     stack_elem e;
     struct _s_stack *next;
-     int size; // Agregamos el campo size aquí
 } stack_t;
 
 /**
@@ -25,14 +24,12 @@ stack stack_empty(stack s){
 * @return The new stack with 'e' at the top
 */
 stack stack_push(stack s, stack_elem e){
-      assert(!stack_is_empty(s));
       stack_t *p = (stack_t *)malloc(sizeof(stack_t));
       if (p == NULL){
           return s;
       }
       p->e=e;
       p-> next=s;
-      p->size = s->size + 1; //actualizamos el valor de size z
       return p;
 }
 
@@ -56,8 +53,13 @@ stack stack_pop(stack s){
 * @param s A stack
 * @return The size of the stack
 */
-unsigned int stack_size(const stack s) {
-    return s ? s->size : 0;
+unsigned int stack_size(stack s){
+	int l = 0;
+	while(!stack_is_empty(s)){
+		s = s->next;
+		l++;
+	}
+        return l;
 }
 
 /**
@@ -90,8 +92,14 @@ bool stack_is_empty(stack s){
 */
 stack_elem *stack_to_array(stack s){
         unsigned int size = stack_size(s);
+        if( size == 0){
+        return NULL;
+        }
     stack_elem *result = (stack_elem *)malloc(size * sizeof(stack_elem));
-    assert(!stack_is_empty(s));
+    
+    if (result == NULL){
+        exit(EXIT_FAILURE);
+    }
         for (unsigned int i = 0; i < size; ++i) {
         result[i] = stack_top(s);
         s = stack_pop(s);
@@ -106,8 +114,9 @@ stack_elem *stack_to_array(stack s){
 */
 
 void stack_destroy(stack s){
+
       assert(stack_is_empty(s));
       free(s);
+      
 }
-
 
