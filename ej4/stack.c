@@ -6,14 +6,15 @@
 
 typedef struct _s_stack {
     stack_elem e;
-    struct _s_stack *next;
+    stack next;
 } stack_t;
 
 /**
 * @brief Creates an empty stack
 * @return An empty stack
 */
-stack stack_empty(stack s){
+stack stack_empty(){
+	stack s = NULL;
       return s = NULL;
 }
 
@@ -24,13 +25,13 @@ stack stack_empty(stack s){
 * @return The new stack with 'e' at the top
 */
 stack stack_push(stack s, stack_elem e){
-      stack_t *p = (stack_t *)malloc(sizeof(stack_t));
-      if (p == NULL){
+      stack_t *new = malloc(sizeof(struct _s_stack));
+      if (new == NULL){
           return s;
       }
-      p->e=e;
-      p-> next=s;
-      return p;
+      new->e = e;
+      new->next =s;
+      return new;
 }
 
 /**
@@ -41,10 +42,11 @@ stack stack_push(stack s, stack_elem e){
 */
 
 stack stack_pop(stack s){
-      assert(!stack_is_empty(s));
-      stack_t *t = s;
+      if(!stack_is_empty(s)){
+      stack t = s;
       s = s->next;
       free(t);
+      }
       return s;
 }
 
@@ -54,12 +56,17 @@ stack stack_pop(stack s){
 * @return The size of the stack
 */
 unsigned int stack_size(stack s){
-	int l = 0;
-	while(!stack_is_empty(s)){
-		s = s->next;
-		l++;
+	unsigned int c = 0u;
+	if(!stack_is_empty(s)){
+	stack p = s;
+	c++;
+	    while(p->next != NULL){
+		p = p->next;
+		c++;
+	    }
 	}
-        return l;
+        
+        return c;
 }
 
 /**
@@ -91,20 +98,17 @@ bool stack_is_empty(stack s){
 * array is determined by 'stack_size(s)'
 */
 stack_elem *stack_to_array(stack s){
-        unsigned int size = stack_size(s);
-        if( size == 0){
-        return NULL;
+        stack_elem *r = NULL;
+        if (!stack_is_empty(s)){
+           r = calloc(stack_size(s), sizeof(stack_elem));
+           stack a = s;
+           int n = stack_size(s);
+           for (int i = n-1; i>-1; --i){
+               r[i] = stack_top(a);
+               a = a-> next;
+           }
         }
-    stack_elem *result = (stack_elem *)malloc(size * sizeof(stack_elem));
-    
-    if (result == NULL){
-        exit(EXIT_FAILURE);
-    }
-        for (unsigned int i = 0; i < size; ++i) {
-        result[i] = stack_top(s);
-        s = stack_pop(s);
-    }
-     return result;
+        return r;
 }
 
 /**
@@ -113,10 +117,12 @@ stack_elem *stack_to_array(stack s){
 * @note All memory resources are freed
 */
 
-void stack_destroy(stack s){
-
-      assert(stack_is_empty(s));
-      free(s);
+stack stack_destroy(stack s){
+     
+      while(!stack_is_empty(s)){
+          s = stack_pop(s);
+      }
+      return s;
       
 }
 
