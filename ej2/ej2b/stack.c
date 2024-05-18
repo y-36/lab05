@@ -6,15 +6,16 @@
 
 typedef struct _s_stack {
     stack_elem e;
-    struct _s_stack *next;
-     int size; // Agregamos el campo size aquí
+    stack next;
+    stack_elem size; // Agregamos el campo size aquí
 } stack_t;
 
 /**
 * @brief Creates an empty stack
 * @return An empty stack
 */
-stack stack_empty(stack s){
+stack stack_empty(){
+      stack s = NULL;
       return s = NULL;
 }
 
@@ -25,14 +26,16 @@ stack stack_empty(stack s){
 * @return The new stack with 'e' at the top
 */
 stack stack_push(stack s, stack_elem e){
-      assert(!stack_is_empty(s));
-      stack_t *p = (stack_t *)malloc(sizeof(stack_t));
-      if (p == NULL){
-          return s;
+
+      stack p = malloc(sizeof(stack_t));
+      p->e = e;
+      p->next = s;
+      if (!stack_is_empty(s)){
+          p->size = s->size +1;
+      }else{
+         p->size = 0;
       }
-      p->e=e;
-      p-> next=s;
-      p->size = s->size + 1; //actualizamos el valor de size z
+      s = p;
       return p;
 }
 
@@ -44,10 +47,11 @@ stack stack_push(stack s, stack_elem e){
 */
 
 stack stack_pop(stack s){
-      assert(!stack_is_empty(s));
-      stack_t *t = s;
+      if(!stack_is_empty(s)){
+      stack a = s;
       s = s->next;
-      free(t);
+      free(a);
+      }
       return s;
 }
 
@@ -89,14 +93,17 @@ bool stack_is_empty(stack s){
 * array is determined by 'stack_size(s)'
 */
 stack_elem *stack_to_array(stack s){
-        unsigned int size = stack_size(s);
-    stack_elem *result = (stack_elem *)malloc(size * sizeof(stack_elem));
-    assert(!stack_is_empty(s));
-        for (unsigned int i = 0; i < size; ++i) {
-        result[i] = stack_top(s);
-        s = stack_pop(s);
-    }
-     return result;
+        stack_elem *array = NULL;
+        if(s != NULL){
+            unsigned int size = stack_size(s);
+            array = malloc(size * sizeof(stack_elem));
+            for (unsigned int i = 0;i < size; i++) {
+                  array[size -i -1] = stack_top(s);
+                  s = stack_pop(s);
+                  
+            }
+        }
+     return array;
 }
 
 /**
@@ -104,10 +111,10 @@ stack_elem *stack_to_array(stack s){
 * @param s A stack
 * @note All memory resources are freed
 */
-
-void stack_destroy(stack s){
-      assert(stack_is_empty(s));
-      free(s);
+stack stack_destroy(stack s) {
+    while (!stack_is_empty(s)) {
+        s = stack_pop(s);
+    }
+    return s;
 }
-
 
