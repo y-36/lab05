@@ -15,7 +15,7 @@ typedef struct _s_stack {
 */
 stack stack_empty(){
 	stack s = NULL;
-      return s = NULL;
+      return s;
 }
 
 /**
@@ -42,11 +42,11 @@ stack stack_push(stack s, stack_elem e){
 */
 
 stack stack_pop(stack s){
-      if(!stack_is_empty(s)){
+      assert(!stack_is_empty(s));
       stack t = s;
       s = s->next;
       free(t);
-      }
+      t = NULL;
       return s;
 }
 
@@ -122,7 +122,7 @@ stack stack_destroy(stack s){
       while(!stack_is_empty(s)){
           s = stack_pop(s);
       }
-      return s;
+      return NULL;
       
 }
 
