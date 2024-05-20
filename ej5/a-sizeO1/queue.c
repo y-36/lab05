@@ -6,11 +6,10 @@
 #include "queue.h"
 
 struct s_queue {
-    /*
-     * COMPLETAR
-     */
-    struct s_node *first;
-};
+     struct  s_node *head;
+     struct  s_node *back;
+     queue_elem e;
+} queue_t;
 
 struct s_node {
     queue_elem elem;
@@ -41,11 +40,9 @@ invrep(queue q) {
 }
 
 queue queue_empty(void) {
-    queue q=NULL;
-    /*
-     * COMPLETAR
-     *
-     */
+    queue q = malloc(sizeof(struct s_queue));
+    q->head = q->back = NULL;
+    q->e = 0;
     assert(invrep(q) && queue_is_empty(q));
     return q;
 }
@@ -53,13 +50,13 @@ queue queue_empty(void) {
 queue queue_enqueue(queue q, queue_elem e) {
     assert(invrep(q));
     struct s_node *new_node = create_node(e);
-    if (q->first==NULL) {
-        q->first = new_node;
+    if (q->head==NULL) {
+        q->head = q->back = new_node;
+        q->e = 1;
     } else {
-        /*
-         * COMPLETAR
-         *
-         */
+       q->back->next = new_node; // uwu
+       q->back = new_node;
+       q->e = e +1;
     }
     assert(invrep(q) && !queue_is_empty(q));
     return q;
@@ -67,27 +64,28 @@ queue queue_enqueue(queue q, queue_elem e) {
 
 bool queue_is_empty(queue q) {
     assert(invrep(q));
-    return q->first == NULL;
+    return q->head == NULL;
 }
 
 queue_elem queue_first(queue q) {
     assert(invrep(q) && !queue_is_empty(q));
-    return q->first->elem;
+    return q->head->elem;
 }
+
 unsigned int queue_size(queue q) {
     assert(invrep(q));
-    unsigned int size=0;
+    
     /*
-     * COMPLETAR
+     * COMPLETADO
      *
      */
-    return size;
+    return q->e;
 }
 
 queue queue_dequeue(queue q) {
     assert(invrep(q) && !queue_is_empty(q));
-    struct s_node * killme=q->first;
-    q->first = q->first->next;
+    struct s_node * killme=q->head;
+    q->head = q->head->next;
     killme = destroy_node(killme);
     assert(invrep(q));
     return q;
@@ -96,7 +94,7 @@ queue queue_dequeue(queue q) {
 
 void queue_dump(queue q, FILE *file) {
     file = file==NULL ? stdout: file;
-    struct s_node *node=q->first;
+    struct s_node *node=q->head;
     fprintf(file, "[ ");
     while(node!=NULL) {
         fprintf(file, "%d", node->elem);
@@ -110,7 +108,7 @@ void queue_dump(queue q, FILE *file) {
 
 queue queue_destroy(queue q) {
     assert(invrep(q));
-    struct s_node *node=q->first;
+    struct s_node *node=q->head;
     while (node != NULL) {
         struct s_node *killme=node;
         node = node->next;
