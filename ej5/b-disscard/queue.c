@@ -7,8 +7,8 @@
 
 struct s_queue {
      struct  s_node *head;
-     struct  s_node *back;
-     queue_elem e;
+     struct  s_node *end;
+     size_t size;
 } queue_t;
 
 struct s_node {
@@ -41,8 +41,8 @@ invrep(queue q) {
 
 queue queue_empty(void) {
     queue q = malloc(sizeof(struct s_queue));
-    q->head = q->back = NULL;
-    q->e = 0;
+    q->head = q->end = NULL;
+    q->size = 0;
     assert(invrep(q) && queue_is_empty(q));
     return q;
 }
@@ -51,42 +51,38 @@ queue queue_enqueue(queue q, queue_elem e) {
     assert(invrep(q));
     struct s_node *new_node = create_node(e);
     if (q->head==NULL) {
-        q->head = q->back = new_node;
-        q->e = 1;
+        q->head = q->end = new_node;
+        q->size = q->size + 1;
     } else {
-       q->back->next = new_node; // uwu
-       q->back = new_node;
-       q->e = e +1;
+       q->end->next = new_node; // uwu
+       q->end = new_node;
+       q->size = q->size + 1;
     }
     assert(invrep(q) && !queue_is_empty(q));
     return q;
 }
 
-queue queue_disscard(queue q, int n){
-	assert(invrep(q) && n <= q->e);
+queue queue_disscard(queue q, unsigned int n){
+	assert(invrep(q) && n <= q->size);
 	if(n == 0 ){
-	q = queue_dequeue(q);
-	} else if (n == q->e-1){
-	q->back = destroy_node(q->back);
-	q->e-=1;
-	struct s_node *new_last = q->head;
-	for(int i =1; i< q->e;i++){
-	    new_last = new_last->next;
+	return queue_dequeue(q);
 	}
-	q->back = new_last;
-	q->back->next = NULL;
+	struct s_node *prev = NULL;
+	struct s_node *actual = q->head;
+	for(unsigned int i = 0; i < n; i++){
+	prev = actual;
+	actual = actual->next;
+	}
+	if (actual == q->end){
+	    q->end = prev;
+	}
+	if(prev != NULL){
+	   prev->next = actual->next;
+	}
 	
-	} else {
-	struct s_node *killme, *pointer;
-	pointer = q->head;
-	for(int i = 0; i < n-1;i++){
-	   pointer =pointer->next;
-	}
-	killme = pointer->next;
-	pointer->next = killme->next;
-	killme =destroy_node(killme);
-	q->e -=1;
-	}
+	destroy_node(actual);
+	q->size--;
+	
 	return q;
 	assert(invrep(q));
 }
@@ -108,7 +104,7 @@ unsigned int queue_size(queue q) {
      * COMPLETADO
      *
      */
-    return q->e;
+    return q->size;
 }
 
 queue queue_dequeue(queue q) {
